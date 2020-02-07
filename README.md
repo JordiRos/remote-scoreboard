@@ -1,2 +1,2 @@
 # remote-scoreboard
-A web service for managing overlay scoreboard functionality
+A remote scoreboard streaming tool.
