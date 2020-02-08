@@ -32,5 +32,6 @@ message.txt # additional message, usually while in rest mode, or to send some ad
 - Receive the contents of all values at login time, and fill the client properly
 - Use BULMA or any other fancy CSS for simpler and responsive site (would be nice if it fits a phone too)
 - Allow more OBS options, as obs-websocket exposes ALL the API
+- Link to challonge to fetch user names and stage
 
 ![Alt text](/remote-scoreboard.jpg?raw=true)
