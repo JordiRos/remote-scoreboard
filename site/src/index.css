@@ -1,0 +1,164 @@
+body {
+  font: 20px "Open Sans", 
+     "HelveticaNeue-Light", 
+     "Helvetica Neue Light", 
+     "Helvetica Neue", 
+     Helvetica, Arial, 
+     "Lucida Grande", 
+     Sans-Serif;
+}
+
+.container {
+  max-width: 1200px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.columns {
+  display: flex;
+}
+
+.columnplayer {
+  margin: 0 auto;
+  width: 35%;
+}
+
+.columnmiddle {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 0 auto;
+  width: 30%;
+}
+
+.columnsingle {
+  width: 100%;
+  display: inline-grid;
+}
+
+.content {
+  margin-bottom: 20px;
+}
+
+.name {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 24px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.button {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 24px;
+  text-align: center;
+  color: #fff;
+  height: 40px;
+  border: 1px transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.panel {
+  display: flex;
+}
+
+.playername {
+  width: 100%;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.playerreset {
+  width: 40px;
+  background-color: #ff3860;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+}
+
+.playerscore {
+  width: 100%;
+  height: 76px;
+  font-size: 48px;
+  border-radius: 0px;
+}
+
+.buttonsubscore {
+  background-color: hsl(0, 0%, 96%);
+  color: #444;
+  float: left;
+  width: 80px;
+  height: 80px;
+  font-size: 60px;
+  border: 1px solid #ccc;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.buttonaddscore {
+  background-color: hsl(0, 0%, 96%);
+  color: #444;
+  float: right;
+  width: 80px;
+  height: 80px;
+  font-size: 60px;
+  border: 1px solid #ccc;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+}
+
+.namestage {
+  width: 100%;
+}
+
+.namemessage {
+  width: 95%;
+  text-align: left;
+  font-size: 16px;
+  height: 60px;
+  margin: 0 auto;
+}
+
+.buttonmatch {
+  width: 100%;
+  font-weight: bold;
+  background-color: #ff3860;
+}
+
+.buttoncasuals {
+  width: 100%;
+  font-weight: bold;
+  background-color: #00d1b2;
+}
+
+.buttonscene {
+  font-size: 14px;
+  font-weight: normal;
+  word-wrap: break-word;
+  width: 120px;
+  height: 80px;
+  font-weight: bold;
+  background-color: hsl(0, 0%, 96%);
+  margin: 0 auto;
+  color: #000;
+}
+
+.buttonselected {
+  border: 5px solid hsl(204, 86%, 53%);
+}
+
+.buttonclear {
+  text-align: center;
+  background-color: #ff3860;
+  margin: 0 auto;
+  width: 250px;
+  height: 60px;
+}
+
+.footer {
+  color: #888;
+  font-size: 12px;
+  text-align: center;
+  padding-top: 20px;
+  margin: 0 auto;
+}
