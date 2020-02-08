@@ -28,6 +28,7 @@ message.txt # additional message, usually while in rest mode, or to send some ad
 
 # todo
 - Add some security to prevent anyone else from connecting
+- Auto reconnect to OBS if not available at init time
 - Receive the contents of all values at login time, and fill the client properly
 - Use BULMA or any other fancy CSS for simpler and responsive site (would be nice if it fits a phone too)
 - Allow more OBS options, as obs-websocket exposes ALL the API
