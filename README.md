@@ -1,7 +1,7 @@
 # remote-scoreboard
 A remote scoreboard streaming tool, especially designed for PvP matches with scoring.
 It allows modifying text files linked to overlays from a local or remote PC, via a nodejs service, which serves both the site and the api.
-Additionaly, it can connect to an OBS via obs-websocket plugin (https://github.com/Palakis/obs-websocket) to receive a list of available scenes, displaying them as buttons and allow selecting it from the app.
+Additionaly, it can connect to an OBS via obs-websocket plugin (https://github.com/Palakis/obs-websocket) to receive a list of available scenes, displaying them as buttons and allow selecting the active one from the app.
 
 TLDR; You can control your streaming remotely from another PC or tablet, in a kind of expanded Stream Deck, where you can control score, set names, stage, messages and even select the current scene.
 
