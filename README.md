@@ -1,13 +1,14 @@
 # remote-scoreboard
-A remote scoreboard streaming tool, especially designed for PvP matches with scoring.
+A remote scoreboard streaming tool, especially designed for PvP matches with scoring (ie fighting games).
 It allows modifying text files linked to overlays from a local or remote PC, via a nodejs service, which serves both the site and the api.
-Additionaly, it can connect to an OBS via obs-websocket plugin (https://github.com/Palakis/obs-websocket) to receive a list of available scenes, displaying them as buttons and allow selecting it from the app.
+Additionaly, it can connect to an OBS via obs-websocket plugin (https://github.com/Palakis/obs-websocket) to receive a list of available scenes, displaying them as buttons and allow selecting them from the app.
+The site is built using React and Bulma, and is 100% responsive, so you can even control your streaming with your phone, similar to a Stream Deck.
 
-TLDR; You can control your streaming remotely from another PC or tablet, in a kind of expanded Stream Deck, where you can control score, set names, stage, messages and even select the current scene.
+TLDR; You can control your streaming remotely from another PC/tablet/phone, and modify names, score, stage, messages and select the current stremaing scene (OBS only).
 
 # usage
-Downloading should be enough, it's already packed (made with React) and you just need to 'npm install' and 'npm run start'
-Open a browser and point to the machine where this is running, ie http://192.168.1.50:3000/index.html (or localhost if same PC). Only tested on Chrome.
+If you want to just use it, download an already packed release (currently 0.1.1), do 'npm install' then 'npm run start'.
+Open a browser and point to the machine where this is running, ie http://192.168.1.50:3000/index.html (or localhost if same PC).
 
 You can edit a few options via a cfg.ini file
 
@@ -30,5 +31,4 @@ message.txt # additional message, usually while in rest mode, or to send some ad
 - Add some security to prevent anyone else from connecting
 - Auto reconnect to OBS if not available at init time
 - Receive the contents of all values at login time, and fill the client properly
-- Use BULMA or any other fancy CSS for simpler and responsive site (would be nice if it fits a phone too)
 - Allow more OBS options, as obs-websocket exposes ALL the API

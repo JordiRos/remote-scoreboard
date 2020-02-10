@@ -1,6 +1,6 @@
 {
     "name": "remote-scoreboard",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": "Jordi Ros <shine.3p@gmail.com.com>",
     "description": "A remote scoreboard streaming tool",
     "license": "MIT",

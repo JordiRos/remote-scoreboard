@@ -32,7 +32,7 @@ function sendCommand(params, callback, now) {
 class Player extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {name: '', score: '', id: props.id};
+    this.state = {name: '', score: '0', id: props.id};
   }
 
   changeField(field, value) {
@@ -93,15 +93,30 @@ class Player extends React.Component {
 
   render() {
     return (
-      <div className="columnplayer">
-        <div className="content panel">
-          <input className="name playername" type="text" value={this.state.name} onChange={this.onChangeName.bind(this)}/>
-          <button className="button playerreset" onClick={this.onResetName.bind(this)}>X</button>
+      <div className="column">
+        <div className="field has-addons">
+          <div className="control is-expanded">
+            <input className="input player" placeholder={"Player " + this.state.id} type="text" value={this.state.name} onChange={this.onChangeName.bind(this)}/>
+          </div>
+          <div className="control">
+            <button className="button is-danger" onClick={this.onResetName.bind(this)}>
+              <span className="icon is-small">
+                <i className="fas fa-times"/>
+              </span>
+            </button>
+          </div>
         </div>
-        <div className="content panel">
-          <button className="button buttonsubscore" onClick={this.onSubScore.bind(this)}>-</button>
-          <input className="name playerscore" type="text" value={this.state.score} onChange={this.onChangeScore.bind(this)}/>
-          <button className="button buttonaddscore" onClick={this.onAddScore.bind(this)}>+</button>
+        <div className="content field has-addons">
+          <div className="control">
+            <button className="button is-large has-addons" onClick={this.onSubScore.bind(this)}>-</button>
+            <p/>
+          </div>
+          <div className="control is-expanded">
+            <input className="input is-large has-addons" type="text" value={this.state.score} onChange={this.onChangeScore.bind(this)}/>
+          </div>
+          <div className="control">
+            <button className="button is-large has-addons" onClick={this.onAddScore.bind(this)}>+</button>
+          </div>
         </div>        
       </div>
     );
@@ -190,9 +205,12 @@ class Scoreboard extends React.Component {
     const scenes = [];
     if (this.state.scenes) {
       this.state.scenes.forEach(scene => {
-        var style = 'button buttonscene';
+        var style = 'button is-light';
         if (this.state.selectedScene === scene) {
-          style += ' buttonselected';
+          style += ' is-primary is-outlined';
+        }
+        else {
+          style += '  ';
         }
         scenes.push(<button className={style} key={scene} data-scene={scene} onClick={this.onSelectStage.bind(this)}>{scene}</button>);
       });
@@ -200,35 +218,27 @@ class Scoreboard extends React.Component {
 
     return (
       <div className="container">
-
-        <div className="columns">
-          <Player ref="player1" id="1"/>
-          <div className="columnmiddle">
-            <button className="button content buttonmatch" onClick={this.onResetMatch.bind(this)}>Reset Match</button>
-            <button className="button content buttoncasuals" onClick={this.onCasuals.bind(this)}>Casuals</button>
-            <input className="name content namestage" placeholder="Stage" type="text" value={this.state.stage} onChange={this.onChangeStage.bind(this)} />
+        <div className="box">
+          <div className="columns">
+            <Player ref="player1" id="1"/>
+            <div className="column is-one-quarter">
+              <button className="button is-primary is-fullwidth gap" onClick={this.onResetMatch.bind(this)}>Reset Match</button>
+              <button className="button is-primary is-fullwidth gap" onClick={this.onCasuals.bind(this)}>Casuals</button>
+            </div>
+            <Player ref="player2" id="2"/>
           </div>
-          <Player ref="player2" id="2"/>
-        </div>
-
-        <div className="columns">
-          <div className="columnsingle content">
-            <textarea className="name namemessage" type="text" value={this.state.message} onChange={this.onChangeMessage.bind(this)} />
+          <input className="input is-half-width gap" placeholder="Stage" type="text" value={this.state.stage} onChange={this.onChangeStage.bind(this)} />          
+          <textarea className="textarea is-expanded gap" placeholder="Message" rows="2" type="text" value={this.state.message} onChange={this.onChangeMessage.bind(this)} />
+          <div className="buttons are-medium is-centered">
+            <button className="button is-centered is-danger is-medium gap" onClick={this.onReset.bind(this)}>RESET</button>
           </div>
-        </div>
-        <div className="columns">
-          <div className="columnsingle content">
-            <button className="button buttonclear" onClick={this.onReset.bind(this)}>CLEAR</button>
+          <div className="buttons are-medium is-centered">
+            {scenes}
           </div>
         </div>
-        <div className="columns content">
-          {scenes}
+        <div className="small-text has-text-centered">
+          {this.state.connected}
         </div>
-        <div className="columns">
-          <div className="columnsingle footer">
-            {this.state.connected}
-          </div>
-        </div>        
       </div>
     );
   }
