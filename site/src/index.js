@@ -212,6 +212,7 @@ class Scoreboard extends React.Component {
   }
 
   onGetChallongePlayers(event) {
+    this.setState({players: []});
     sendChallongeCommand('players', {tournament: this.challongeTournament})
     .then(data => {
       data.json()
@@ -222,20 +223,24 @@ class Scoreboard extends React.Component {
     .catch(err => {});
   }
 
+  onResetPlayerFilter(event) {
+    this.setState({playerFilter: ''});
+  }
+
   onChangePlayerFilter(event) {
     this.setState({playerFilter: event.target.value});
   }
 
   onSetPlayer1Name(event) {
-    this.refs.player1.onChangeName({target: {value: document.getElementById("playerName").textContent}});
+    this.refs.player1.onChangeName({target: {value: document.getElementById("playerName").value}});
   }
 
   onSetPlayer2Name(event) {
-    this.refs.player2.onChangeName({target: {value: document.getElementById("playerName").textContent}});
+    this.refs.player2.onChangeName({target: {value: document.getElementById("playerName").value}});
   }  
 
   render() {
-    const scenes = [];
+    var scenes = [];
     if (this.state.scenes) {
       this.state.scenes.forEach(scene => {
         var style = 'button is-light';
@@ -246,14 +251,16 @@ class Scoreboard extends React.Component {
       });
     }
 
-    const players = [];
-    if (this.state.players) {
-      this.state.players.forEach(player => {
-        if (player.toUpperCase().indexOf(this.state.playerFilter.toUpperCase()) >= 0) {
-          players.push(<option value={player} key={player}>{player}</option>);
-        }
-      });
+    var players = [];
+    var playersClass = 'level-item';
+    if (!this.state.players.length) {
+      playersClass+=' is-hidden';
     }    
+    this.state.players.forEach(player => {
+      if (player.toUpperCase().indexOf(this.state.playerFilter.toUpperCase()) >= 0) {
+        players.push(<option value={player} key={player}>{player}</option>);
+      }
+    });
 
     return (
       <div className="container">
@@ -285,25 +292,28 @@ class Scoreboard extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="level-item">
+            <div className={playersClass}>
               <div className="field has-addons">
                 <div className="control">
-                  <input className="input" placeholder="Filter" onChange={e => this.onChangePlayerFilter(e)}/>
+                  <button className="button is-danger" onClick={e => this.onResetPlayerFilter(e)}>
+                    <span className="icon is-small">
+                      <i className="fas fa-times"/>
+                    </span>
+                  </button>
                 </div>
                 <div className="control">
-                  <div className="select" id="playerName">
-                    <select ref="playerName">
+                  <input className="input" value={this.state.playerFilter} placeholder="Filter" onChange={e => this.onChangePlayerFilter(e)}/>
+                </div>
+                <div className="control">
+                  <div className="select">
+                    <select id="playerName" ref="playerName">
                       {players}
                     </select>
                   </div>
                 </div>
-                <div className="control">
-                  <button className="button is-primary" onClick={e => this.onSetPlayer1Name(e)}>To P1</button>
-                </div>
-                <div className="control">
-                  <button className="button is-primary" onClick={e => this.onSetPlayer2Name(e)}>To P2</button>
-                </div>
               </div>
+              <button className="button is-primary gap" onClick={e => this.onSetPlayer1Name(e)}>To P1</button>
+              <button className="button is-primary gap" onClick={e => this.onSetPlayer2Name(e)}>To P2</button>
             </div>
           </nav>
         </div>
@@ -316,4 +326,3 @@ class Scoreboard extends React.Component {
 }
 
 ReactDOM.render(<Scoreboard />, document.getElementById('root'));
-
