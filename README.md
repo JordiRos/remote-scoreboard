@@ -31,8 +31,7 @@ stage.txt # stage (Pools, Winners, Losers, Casuals, etc)</br>
 message.txt # additional message, usually while in rest mode, or to send some advice, can accomodate longer text</br>
 
 # todo
-- Add some security to prevent anyone else from connecting
-- Receive the contents of all values at login time, and fill the client properly
-- Allow more OBS options, as obs-websocket exposes ALL the API
+- Add security to prevent anyone else from connecting if they are in the same network
+- Receive contents of all streaming fields at login time, and fill the client properly
 
 ![Alt text](/remote-scoreboard.jpg?raw=true)
