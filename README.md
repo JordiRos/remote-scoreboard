@@ -18,8 +18,8 @@ You can edit a few options via a cfg.ini file
 <code>dataPath=c:/obs_overlays  # where the streaming files will be saved</code></br>
 <code>obsHost=localhost:4444    # if you want to connect to your OBS</code></br>
 <code>obsPassword=password      # if your OBS is protected by a password, this is it</code></br>
-<code>challongeUsername=user    # if you want to connect to Challonge
-<code>challongeApiKey=password  # apiKey for your Challonge user
+<code>challongeUsername=user    # if you want to connect to Challonge</code></br>
+<code>challongeApiKey=password  # apiKey for your Challonge user</code></br>
 
 These are the file names that will be saved in the dataPath folder
 
