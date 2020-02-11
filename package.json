@@ -1,6 +1,6 @@
 {
     "name": "remote-scoreboard",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": "Jordi Ros <shine.3p@gmail.com.com>",
     "description": "A remote scoreboard streaming tool",
     "license": "MIT",
@@ -11,10 +11,14 @@
         "start": "node js/main.js"
     },
     "dependencies": {
+        "challonge": "^2.2.0",
+        "fetch": "^1.1.0",
+        "http-server": "~0.12.0",
         "ini": "~1.3.5",
+        "node-fetch": "^2.6.0",
+        "obs-websocket-js": "^4.0.1",
         "serve": "~11.3.0",
         "serve-handler": "~6.1.2",
-        "http-server": "~0.12.0",
         "ws": "~7.2.1"
     }
 }

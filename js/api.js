@@ -3,11 +3,40 @@ require('./base.js')();
 var handler = require('serve-handler');
   http = require('http'),
   fs = require('fs'),
+  fetch = require('node-fetch'),
   OBSWebSocket = require('obs-websocket-js');
 
 var obs;
 
-function handleApiSet(data) {
+function connectObs() {
+  if (obs) {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+  obs = new OBSWebSocket();
+  obs.on('error', err => {
+    obs = undefined;
+    log.error('[API] OBS websocket error: ', err);
+    log.error(err);
+    return connectObs();
+  });
+  return new Promise((resolve, reject) => {
+    obs.connect({ address: cfg.obsHost, password: cfg.obsPassword })
+    .then(() => {
+      log.info('[API] OBS connected!');
+      resolve();
+    })
+    .catch(err => {
+      obs = undefined;
+      log.error('[API] OBS connection error: ');
+      log.error(err);
+      reject(err);
+    });
+  });
+}
+
+function handleApiSet(request, response) {
   var saveFile = (file, value) => {
     if (value !== undefined) {
       log.debug('[API] Saving ' + file + ' with ' + value);
@@ -19,24 +48,89 @@ function handleApiSet(data) {
     }
   };
 
-  saveFile(cfg.p1name, data.p1name);
-  saveFile(cfg.p2name, data.p2name);
-  saveFile(cfg.p1score, data.p1score);
-  saveFile(cfg.p2score, data.p2score);
-  saveFile(cfg.stage, data.stage);
-  saveFile(cfg.message, data.message);
+  saveFile(cfg.p1name, request.p1name);
+  saveFile(cfg.p2name, request.p2name);
+  saveFile(cfg.p1score, request.p1score);
+  saveFile(cfg.p2score, request.p2score);
+  saveFile(cfg.stage, request.stage);
+  saveFile(cfg.message, request.message);
+
+  response.end();
 }
 
-function handleApiObs(data) {
-  if (obs) {
-    log.verbose('[API] Sending OBS command: ' + data.func + ' with args ' + JSON.stringify(data.args));
-    obs.send(data.func, data.args);
+function handleApiObs(request, response) {
+  connectObs()
+  .then(() => {
+    if (request.func === 'login') {
+      let params = {};
+      let requests = 2;
+      let endRequest = () => {
+        requests--;
+        if (requests === 0) {
+          response.write(JSON.stringify(params));
+          response.end();
+        }
+      };
+      obs.send('GetCurrentScene')
+      .then(data => {
+        log.verbose('[API] Active OBS scene is ' + data.name);
+        params.selectedScene = data.name;
+        endRequest();
+      })
+      .catch(err => {
+        endRequest();
+      });
+      obs.send('GetSceneList')
+      .then(data => {
+        log.verbose('[API] ' + data.scenes.length + ' available OBS scenes');
+        params.scenes = [];
+        data.scenes.forEach(scene => {
+          params.scenes.push(scene.name);
+        });
+        endRequest();
+      })
+      .catch(err => {
+        endRequest();
+      });
+    }
+    else {
+      log.verbose('[API] Sending OBS command: ' + request.func + ' with args ' + JSON.stringify(request.args));
+      obs.send(request.func, request.args);
+    }
+  })
+  .catch(err => {});
+}
+
+function handleApiChallonge(request, response) {
+  if (request.func = 'players') {
+    var host = 'https://' + cfg.challongeUsername + ':' + cfg.challongeApiKey + '@api.challonge.com/v1/tournaments/' + request.args.tournament + '/participants.json';
+    log.verbose('[API] Challonge request: ' + host);
+    fetch(host, {headers: {"content-type":"application/json; charset=UTF-8"}, method: "GET"})
+    .then(data => {
+      data.json()
+      .then(data => {
+        var params = {players: []};
+        data.forEach(participant => {
+          params.players.push(participant.participant.display_name);
+        });
+        response.write(JSON.stringify(params));
+        response.end();
+      })
+      .catch(err => {});
+    })
+    .catch(err => {
+      log.verbose('[API] Challonge request error:');
+      log.verbose(err);
+    });
+    
+  }
+  else {
+    response.end();
   }
 }
 
 function handleApi(request, response) {
   if (request.method === "OPTIONS") {
-    // For CORS
     response.writeHead(200);
     response.end('TEST');
   }  
@@ -46,7 +140,7 @@ function handleApi(request, response) {
       body += data;
       if (body.length > 1e7) {
         response.writeHead(413, 'Request Too Large', {'Content-Type': 'text/plain'});
-        response.end('');
+        response.end();
       }
     });
     request.on('end', () => {
@@ -55,52 +149,31 @@ function handleApi(request, response) {
       response.writeHead(200, {'Content-Type': 'text/plain'});
       if (data.cmd === 'login') {
         log.verbose("[API] Login received");
-        var params = {};
-        var requests = 2;
-        var endRequest = () => {
-          requests--;
-          if (requests === 0) {
-            // end with all requests, return response
-            response.end(JSON.stringify(params));
-          }
-        };
-        obs.send('GetCurrentScene')
-        .then(data => {
-          log.verbose('[API] Active OBS scene is ' + data.name);
-          params.selectedScene = data.name;
-          endRequest();
-        });
-        obs.send('GetSceneList')
-        .then(data => {
-          log.verbose('[API] ' + data.scenes.length + ' available OBS scenes');
-          params.scenes = [];
-          data.scenes.forEach(scene => {
-            params.scenes.push(scene.name);
-          });
-          endRequest();
-        });
+        response.end();
       }
       else if (data.cmd === 'set') {
-        handleApiSet(data);
-        response.end('');
+        handleApiSet(data, response);
       }
       else if (data.cmd === 'obs') {
-        handleApiObs(data);
-        response.end('');
+        handleApiObs(data, response);
+      }
+      else if (data.cmd === 'challonge') {
+        console.log(data);
+        handleApiChallonge(data, response);
       }      
       else {
-        response.end(''); 
+        response.end(); 
       }
     });
   }
   else {
     response.writeHead(404, '', {'Content-Type': 'text/plain'});
-    response.end('');
+    response.end();
   }
 }
 
 var init = (port) => {
-  log.info('[API] Init HTTP server on port ' + port);
+  log.info('[API] Initialize HTTP server on port ' + port);
   http.createServer((request, response) => {
     if (cfg.cors) {
       response.setHeader('Access-Control-Allow-Origin', '*');
@@ -120,21 +193,14 @@ var init = (port) => {
     }
   }).listen(port, '0.0.0.0');
 
+  if (cfg.challongeApiKey) {
+    log.info('[API] Challonge API enabled');
+  }
+
   if (cfg.obsHost) {
-    log.info('[API] Initializing OBS...');
-    obs = new OBSWebSocket();
-    obs.on('error', err => {
-        log.error('[API] OBS websocket error: ', err);
-    });
-    obs.connect({ address: cfg.obsHost, password: cfg.obsPassword })
-    .then(() => {
-        log.info('[API] OBS connected!');
-    })
-    .catch(err => {
-        log.error('[API] OBS connection error: ');
-        log.error(err);
-    });    
-  }  
+    log.info('[API] Connecting to OBS at ' + cfg.obsHost + '...');
+    connectObs().catch(err => {});
+  }
 };
 
 // exports

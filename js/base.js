@@ -6,7 +6,13 @@ module.exports = function() {
   this.ERR_API = 'invalid api call';
   this.ERR_FILE_NOT_FOUND = 'file not found';
 
-  var cfg = ini.parse(fs.readFileSync('./cfg.ini', 'utf-8'));
+  try {
+    var cfg = ini.parse(fs.readFileSync('./cfg.ini', 'utf-8'));
+  }
+  catch (e) {
+    log.info('!Can\'t load config file');
+    cfg = {};
+  }
   cfg.cors = cfg.cors || false;
   cfg.debug = cfg.debug || false;
   cfg.verbose = cfg.verbose || false;
