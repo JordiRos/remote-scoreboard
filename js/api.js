@@ -8,32 +8,31 @@ var handler = require('serve-handler');
 
 var obs;
 
-function connectObs() {
-  if (obs) {
-    return new Promise((resolve, reject) => {
-      resolve();
-    });
-  }
-  obs = new OBSWebSocket();
-  obs.on('error', err => {
-    obs = undefined;
-    log.error('[API] OBS websocket error: ', err);
-    log.error(err);
-    return connectObs();
-  });
-  return new Promise((resolve, reject) => {
-    obs.connect({ address: cfg.obsHost, password: cfg.obsPassword })
-    .then(() => {
-      log.info('[API] OBS connected!');
-      resolve();
-    })
-    .catch(err => {
-      obs = undefined;
-      log.error('[API] OBS connection error: ');
-      log.error(err);
-      reject(err);
-    });
-  });
+function keepObsAlive() {
+  if (!obs) {
+  	obs = new OBSWebSocket();
+	  obs.on('error', err => {
+	    obs = undefined;
+	    log.error('[API] OBS websocket error: ', err);
+	    log.error(err);
+	  });
+	  return new Promise((resolve, reject) => {
+	  	log.info('[API] Connecting to OBS at ' + cfg.obsHost + '...');
+	    obs.connect({ address: cfg.obsHost, password: cfg.obsPassword })
+	    .then(() => {
+	      log.info('[API] OBS connected!');
+	    })
+	    .catch(err => {
+	      obs = undefined;
+	      log.verbose('[API] OBS connection error: ');
+	      log.verbose(err);
+	    });
+	  });
+	}
+	else {
+		// send a random request to keep connection alive
+    obs.send('GetCurrentScene').then(data => {}).catch(err => {});
+	}
 }
 
 function handleApiSet(request, response) {
@@ -59,8 +58,7 @@ function handleApiSet(request, response) {
 }
 
 function handleApiObs(request, response) {
-  connectObs()
-  .then(() => {
+	if (obs) {
     if (request.func === 'login') {
       let params = {};
       let requests = 2;
@@ -97,8 +95,7 @@ function handleApiObs(request, response) {
       log.verbose('[API] Sending OBS command: ' + request.func + ' with args ' + JSON.stringify(request.args));
       obs.send(request.func, request.args);
     }
-  })
-  .catch(err => {});
+  }
 }
 
 function handleApiChallonge(request, response) {
@@ -198,8 +195,8 @@ var init = (port) => {
   }
 
   if (cfg.obsHost) {
-    log.info('[API] Connecting to OBS at ' + cfg.obsHost + '...');
-    connectObs().catch(err => {});
+    keepObsAlive();
+    setInterval(keepObsAlive, 10000);
   }
 };
 
