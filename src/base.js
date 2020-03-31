@@ -2,15 +2,11 @@ const fs = require('fs'),
   ini = require('ini');
 
 module.exports = function() {
-  this.ERR_OK = 0;
-  this.ERR_API = 'invalid api call';
-  this.ERR_FILE_NOT_FOUND = 'file not found';
-
   try {
     var cfg = ini.parse(fs.readFileSync('./cfg.ini', 'utf-8'));
   }
   catch (e) {
-    log.info('!Can\'t load config file');
+    console.log('!Can\'t load config file');
     cfg = {};
   }
   cfg.cors = cfg.cors || false;
@@ -25,27 +21,12 @@ module.exports = function() {
   cfg.stage = cfg.stage || 'stage.txt';
   cfg.message = cfg.message || 'message.txt';
 
-  // Add timestamp information to console.x methods
-  /*
-  require('console-stamp')(console, {
-    pattern: 'dd/mm/yyyy HH:MM:ss.l',
-    colors: { stamp: 'yellow' },
-    label: false
-  });
-  */
-
   var logInfo = function (str) {
     console.log(str);
   };
 
   var logError = function (str) {
     console.log(str);
-  };
-
-  var logVerbose = function (str) {
-    if (cfg.verbose || cfg.debug) {
-      console.log(str);
-    }
   };
 
   var logDebug = function (str) {
@@ -55,5 +36,5 @@ module.exports = function() {
   };
 
   this.cfg = cfg;
-  this.log = { info: logInfo, error: logError, verbose: logVerbose, debug: logDebug };
+  this.log = { info: logInfo, error: logError, debug: logDebug };
 };

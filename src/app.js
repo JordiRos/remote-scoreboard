@@ -23,7 +23,7 @@ var init = function (port) {
       for (let filename in files) {
         let filePath = path.join(cfg.dataPath, filename);
         fs.readFile(filePath, 'utf8', (err, data) => {
-          if(err) { return console.log(err); }
+          if(err) { return log.error(err); }
           eval(files[filename] + "=`" + data + "`");          
         });
       }
@@ -42,7 +42,7 @@ var init = function (port) {
     for (let filename in files) {
       var filePath = path.join(cfg.dataPath, filename);
       fs.writeFile(filePath, files[filename], function(err) {
-        if(err) { return console.log(err); }
+        if(err) { return log.error(err); }
       });
     }
   };
@@ -51,7 +51,7 @@ var init = function (port) {
     socket.connected = true;
     socket.remoteAddress = req.connection.remoteAddress;
     log.debug('[APP] Request Headers: ' + JSON.stringify(req.headers));
-    log.verbose('[APP] Client connected: ' + socket.remoteAddress);
+    log.info('[APP] Client connected: ' + socket.remoteAddress);
     socket.on('msg', (msg) => {
       log.debug('[APP] Msg received: ' + msg.toString());
       try {
@@ -65,11 +65,11 @@ var init = function (port) {
     });
     socket.on('close', function (code, reason) {
       if (socket.connected) {
-        log.debug('[APP] Client closed: ' + socket.remoteAddress);
+        log.info('[APP] Client closed: ' + socket.remoteAddress);
       }
     });
     socket.on('error', function (code, reason) {
-      log.debug('[APP] Client error: ' + socket.remoteAddress);
+      log.error('[APP] Client error: ' + socket.remoteAddress);
     });
   });
 };

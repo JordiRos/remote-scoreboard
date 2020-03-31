@@ -24,8 +24,8 @@ function keepObsAlive() {
 	    })
 	    .catch(err => {
 	      obs = undefined;
-	      log.verbose('[API] OBS connection error: ');
-	      log.verbose(err);
+	      log.error('[API] OBS connection error: ');
+	      log.error(err);
 	    });
 	  });
 	}
@@ -71,7 +71,7 @@ function handleApiObs(request, response) {
       };
       obs.send('GetCurrentScene')
       .then(data => {
-        log.verbose('[API] Active OBS scene is ' + data.name);
+        log.debug('[API] Active OBS scene is ' + data.name);
         params.selectedScene = data.name;
         endRequest();
       })
@@ -80,7 +80,7 @@ function handleApiObs(request, response) {
       });
       obs.send('GetSceneList')
       .then(data => {
-        log.verbose('[API] ' + data.scenes.length + ' available OBS scenes');
+        log.debug('[API] ' + data.scenes.length + ' available OBS scenes');
         params.scenes = [];
         data.scenes.forEach(scene => {
           params.scenes.push(scene.name);
@@ -92,7 +92,7 @@ function handleApiObs(request, response) {
       });
     }
     else {
-      log.verbose('[API] Sending OBS command: ' + request.func + ' with args ' + JSON.stringify(request.args));
+      log.debug('[API] Sending OBS command: ' + request.func + ' with args ' + JSON.stringify(request.args));
       obs.send(request.func, request.args);
     }
   }
@@ -101,7 +101,7 @@ function handleApiObs(request, response) {
 function handleApiChallonge(request, response) {
   if (request.func = 'players') {
     var host = 'https://' + cfg.challongeUsername + ':' + cfg.challongeApiKey + '@api.challonge.com/v1/tournaments/' + request.args.tournament + '/participants.json';
-    log.verbose('[API] Challonge request: ' + host);
+    log.debug('[API] Challonge request: ' + host);
     fetch(host, {headers: {"content-type":"application/json; charset=UTF-8"}, method: "GET"})
     .then(data => {
       data.json()
@@ -116,8 +116,8 @@ function handleApiChallonge(request, response) {
       .catch(err => {});
     })
     .catch(err => {
-      log.verbose('[API] Challonge request error:');
-      log.verbose(err);
+      log.error('[API] Challonge request error:');
+      log.error(err);
     });
     
   }
@@ -141,11 +141,11 @@ function handleApi(request, response) {
       }
     });
     request.on('end', () => {
-      log.verbose('[API] Request: ' + request.url + ' ' + JSON.stringify(body));
+      log.info('[API] Request: ' + request.url + ' ' + JSON.stringify(body));
       var data = JSON.parse(body);
       response.writeHead(200, {'Content-Type': 'text/plain'});
       if (data.cmd === 'login') {
-        log.verbose("[API] Login received");
+        log.debug("[API] Login received");
         response.end();
       }
       else if (data.cmd === 'set') {

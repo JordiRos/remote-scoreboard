@@ -2,7 +2,7 @@ require('./base.js')();
 
 var api = require('./api.js');
 
-console.log('Remote scoreboard streaming tool v0.1.3');
+console.log('Remote scoreboard streaming tool v0.1.4');
 console.log('Jordi Ros <shine.3p@gmail.com>');
 console.log('Allow Cors = ' + cfg.cors);
 console.log('Data Path = ' + cfg.dataPath);
