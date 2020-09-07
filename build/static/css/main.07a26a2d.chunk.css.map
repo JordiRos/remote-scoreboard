@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAIA,eACE,iBACF,CAEA,KACE,kBACF","file":"main.07a26a2d.chunk.css","sourcesContent":["input {\n  text-align: center;\n}\n\ntextarea {\n  text-align: center;\n}\n\n.gap {\n  margin-bottom: 12px;\n}\n"]}
